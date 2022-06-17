@@ -6,7 +6,18 @@ const room = document.getElementById("room");
 
 room.hidden = true;
 
-let roomName;
+let roomName, nickName;
+
+function showAlert(msg) {
+  alert(msg);
+}
+
+function checkBlank(string) {
+  if (typeof string === "string" && string.trim().length === 0) {
+    return true;
+  }
+  return false;
+}
 
 function addMessage(message) {
   const ul = room.querySelector("ul");
@@ -45,10 +56,23 @@ function showRoom() {
 
 function handleRoomSubmit(event) {
   event.preventDefault();
-  const input = form.querySelector("input");
-  socket.emit("enter_room", input.value, showRoom);
-  roomName = input.value;
-  input.value = "";
+  const roomnameInput = form.querySelector("#roomname");
+  const nicknameInput = form.querySelector("#nickname");
+  const checkRoomname = checkBlank(roomnameInput.value);
+  if (checkRoomname) {
+    showAlert("Please check the blanks in roomname.");
+    return false;
+  }
+  const checkNickname = checkBlank(nicknameInput.value);
+  if (checkNickname) {
+    showAlert("Please check the blanks in nickname.");
+    return false;
+  }
+  socket.emit("enter_room", roomnameInput.value, nicknameInput.value, showRoom);
+  roomName = roomnameInput.value;
+  nickName = nicknameInput.value;
+  roomnameInput.value = "";
+  nicknameInput.value = "";
 }
 
 form.addEventListener("submit", handleRoomSubmit);
