@@ -3,23 +3,41 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Noom
-        link(rel="stylesheet", href="https://unpkg.com/mvp.css")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title Zoom
+        link(rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Round")
+        link(rel="stylesheet" href="/public/css/style.css")
     body
-        header
-            h1 Noom
         main
-            div#welcome
-                form
-                    input(type="text" placeholder="room name" required)
-                    button Enter room
-            div#call
-                div#myStream
-                    video#myFace(autoplay playsinline width="400" height="400")
-                    button#mute Mute
-                    button#camera Turn Camera Off
-                    select#cameras
-                    video#peerFace(autoplay playsinline width="400" height="400")
+            section.welcome
+                div.welcome__img
+                    img(src="http://drive.google.com/uc?export=download&id=1PQIJmiZyVEETI9cRpFKib6CbrDZVzzhm" alt="main" srcset="")
+                header
+                    h1 Hello Again!
+                    h3 Welcome back you've been missed!
+                form(method="post")
+                    input(type="text" name="room" placeholder="Enter room" required)
+                    input(type="text", name="nickname" placeholder="Enter nickname" required)
+                    button Enter Room
+            section.room#room
+                    article.room__stream
+                        video.stream__mine(src="" autoplay playsinline) 
+                        div.stream__overlay
+                            header
+                                button.stream--mute.material-icons-round volume_off
+                                button.stream--off.material-icons-round call
+                            div.stream__control-btn
+                                div.select
+                                    select.stream--cameras
+                            div.stream__peers
+                                div.stream__peer
+                                    video.stream__other(src="" autoplay playsinline)
+                                    span.other__name WHO
+                    article.room__chat
+                        div.chat__move
+                        div.chat__bubbles
+                        form.chat__form
+                            input.chat__msg(type="text" name="msg")
+                            button.chat--send.material-icons-round send
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")

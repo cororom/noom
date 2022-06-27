@@ -1,0 +1,394 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap");
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+* {
+  font-family: "Roboto", sans-serif;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+}
+body {
+  width: 100%;
+  height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+main {
+  width: 414px;
+  height: 816px;
+  background-color: #f3f1f4;
+  border-radius: 50px;
+  position: relative;
+}
+.welcome {
+  width: 100%;
+  height: 100%;
+}
+.welcome img {
+  width: 100%;
+  border-radius: 50%;
+}
+.welcome__img {
+  background-color: #abb0ef;
+  border-radius: 40px;
+  margin: 10px;
+  max-width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.welcome header {
+  padding: 0px 30px;
+  margin: 50px auto 45px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.welcome header h1 {
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 30px;
+}
+.welcome header h3 {
+  font-size: 24px;
+  font-weight: 400;
+  width: 70%;
+  text-align: center;
+  line-height: 1.2;
+}
+.welcome form {
+  padding: 0px 30px 30px 30px;
+  display: flex;
+  flex-direction: column;
+}
+.welcome input {
+  padding: 25px;
+  font-size: 15px;
+}
+.welcome input,
+.welcome button {
+  height: 55px;
+  border-radius: 12px;
+}
+.welcome form:last-child input {
+  margin-top: 12px;
+}
+.welcome input::placeholder {
+  font-size: 14px;
+  font-weight: 500;
+  color: #9f9eaa;
+}
+.welcome form:last-child button {
+  background-color: #fd6b68;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 64px;
+  box-shadow: rgb(253, 107, 104) -4px 9px 25px -6px;
+}
+.room {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.room__stream .stream__mine {
+  width: 100%;
+  height: 60%;
+  background-color: black;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+}
+.room__stream .stream__overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 35px 20px;
+  height: 60%;
+}
+.room__stream header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 35px;
+}
+.room__stream header h2 {
+  color: white;
+}
+.stream__control-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 50%;
+}
+.room__stream button {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.stream--mute {
+  color: #67667b;
+  background-color: #eaf4ff;
+}
+.stream--off {
+  color: white;
+  background-color: #ff644f;
+}
+.stream__peers {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.stream__peers::-webkit-scrollbar {
+  display: none;
+}
+.stream__peer {
+  position: relative;
+}
+.stream__peer:not(:last-child) {
+  margin-right: 20px;
+}
+.stream__other {
+  width: 120px;
+  height: 120px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 14px;
+}
+.other__name {
+  border: none;
+  position: absolute;
+  left: 10px;
+  bottom: 12px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eaf4ff;
+  padding: 3px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.room__chat {
+  width: 100%;
+  height: 40%;
+  padding: 20px;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  bottom: 0;
+  background-color: #191e28;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+}
+.room__chat form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat__msg {
+  width: 85%;
+  height: 44px;
+  background-color: #2b303b;
+  border-radius: 12px;
+}
+.chat--send {
+  color: white;
+  background-color: #2b303b;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hide {
+  display: none;
+}
+select {
+  /* Reset Select */
+  appearance: none;
+  outline: 0;
+  border: 0;
+  box-shadow: none;
+  /* Personalize */
+  flex: 1;
+  padding: 0 1em;
+  color: #fff;
+  opacity: 0;
+  background-image: none;
+  cursor: pointer;
+}
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select wrapper */
+.select {
+  position: relative;
+  display: flex;
+  height: 3em;
+  border-radius: 0.25em;
+  overflow: hidden;
+}
+/* Arrow */
+.select::after {
+  font-family: "Material Icons Round";
+  font-weight: normal;
+  font-style: normal;
+  content: "\efeb";
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  border-radius: 12px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: 0.25s all ease;
+  pointer-events: none;
+}
+/* Transition */
+.select:hover::after {
+  color: #37a7ff;
+}

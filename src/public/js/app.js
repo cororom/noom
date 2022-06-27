@@ -1,12 +1,12 @@
 const socket = io();
 
-const myFace = document.getElementById("myFace");
-const muteBtn = document.getElementById("mute");
-const cameraBtn = document.getElementById("camera");
-const camerasSelect = document.getElementById("cameras");
-const call = document.getElementById("call");
+const myFace = document.querySelector(".stream__mine");
+const muteBtn = document.querySelector(".stream--mute");
+const cameraBtn = document.querySelector(".stream--off");
+const camerasSelect = document.querySelector(".stream--cameras");
+const room = document.querySelector(".room");
 
-call.hidden = true;
+room.classList.add("hide");
 
 let myStream;
 let muted = false;
@@ -56,13 +56,13 @@ async function getMedia(deviceId) {
 
 function handleMuteClick() {
   myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
-  muteBtn.innerText = !muted ? "Unmute" : "Mute";
+  muteBtn.innerText = !muted ? "volume_up" : "volume_off";
   muted = !muted;
 }
 
 function handleCameraClick() {
   myStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
-  cameraBtn.innerText = cameraOff ? "Turn Camera Off" : "Turn Camera On";
+  cameraBtn.innerText = cameraOff ? "call" : "call_end";
   cameraOff = !cameraOff;
 }
 
@@ -81,12 +81,12 @@ camerasSelect.addEventListener("input", handleCameraChange);
 
 // Welcome Form (join a room)
 
-const welcome = document.getElementById("welcome");
+const welcome = document.querySelector(".welcome");
 const welcomeForm = welcome.querySelector("form");
 
-async function initCall() {
-  welcome.hidden = true;
-  call.hidden = false;
+async function initRoom() {
+  welcome.classList.add("hide");
+  room.classList.remove("hide");
   await getMedia();
   makeConnection();
 }
@@ -94,13 +94,29 @@ async function initCall() {
 async function handleWelcomeSubmit(event) {
   event.preventDefault();
   const input = welcomeForm.querySelector("input");
-  await initCall();
+  await initRoom();
   socket.emit("join_room", input.value);
   roomName = input.value;
   input.value = "";
 }
 
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
+
+// Chat Form
+
+const chat = document.querySelector(".room__chat");
+const chatForm = chat.querySelector("form");
+
+function handleBubble() {}
+
+async function handleChatSubmit(event) {
+  event.preventDefault();
+  const input = chatForm.querySelector("input");
+  await myDataChannel.send(input.value);
+  input.value = "";
+}
+
+chatForm.addEventListener("submit", handleChatSubmit);
 
 // Socket Code
 
@@ -161,6 +177,6 @@ function handleIce(data) {
 }
 
 function handleTrack(data) {
-  const peerFace = document.getElementById("peerFace");
+  const peerFace = document.querySelector(".stream__other");
   peerFace.srcObject = data.streams[0];
 }
