@@ -16,8 +16,9 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIo(httpServer);
 
 wsServer.on("connection", (socket) => {
-  socket.on("join_room", (roomName) => {
+  socket.on("join_room", (roomName, nickName) => {
     socket.join(roomName);
+    socket["nickname"] = nickName;
     socket.to(roomName).emit("welcome");
   });
   socket.on("offer", (offer, roomName) => {

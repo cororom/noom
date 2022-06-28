@@ -12,6 +12,7 @@ let myStream;
 let muted = false;
 let cameraOff = false;
 let roomName;
+let nickName;
 let myPeerConnection;
 let myDataChannel;
 
@@ -93,11 +94,13 @@ async function initRoom() {
 
 async function handleWelcomeSubmit(event) {
   event.preventDefault();
-  const input = welcomeForm.querySelector("input");
+  const input = welcomeForm.querySelectorAll("input");
+  roomName = input[0].value;
+  nickName = input[1].value;
   await initRoom();
-  socket.emit("join_room", input.value);
-  roomName = input.value;
-  input.value = "";
+  socket.emit("join_room", roomName, nickName);
+  input[0].value = "";
+  input[1].value = "";
 }
 
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
@@ -107,13 +110,28 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 const chat = document.querySelector(".room__chat");
 const chatForm = chat.querySelector("form");
 
-function handleBubble() {}
+function handleBubble(obj) {
+  const info = JSON.parse(obj);
+  const bubbles = document.querySelector(".chat__bubbles");
+  const div = document.createElement("div");
+  if (info.name === nickName) {
+    div.className = "chat__bubble mine";
+  } else {
+    div.className = "chat__bubble other";
+  }
+  const span = document.createElement("span");
+  span.innerText = info.msg;
+  div.appendChild(span);
+  bubbles.appendChild(div);
+}
 
 async function handleChatSubmit(event) {
   event.preventDefault();
   const input = chatForm.querySelector("input");
-  await myDataChannel.send(input.value);
+  const obj = JSON.stringify({ name: nickName, msg: input.value });
+  await myDataChannel.send(obj);
   input.value = "";
+  handleBubble(obj);
 }
 
 chatForm.addEventListener("submit", handleChatSubmit);
@@ -122,7 +140,7 @@ chatForm.addEventListener("submit", handleChatSubmit);
 
 socket.on("welcome", async () => {
   myDataChannel = myPeerConnection.createDataChannel("chat");
-  myDataChannel.addEventListener("message", (event) => console.log(event.data));
+  myDataChannel.addEventListener("message", (event) => handleBubble(event.data));
   console.log("made data channel");
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
@@ -133,7 +151,7 @@ socket.on("welcome", async () => {
 socket.on("offer", async (offer) => {
   myPeerConnection.addEventListener("datachannel", (event) => {
     myDataChannel = event.channel;
-    myDataChannel.addEventListener("message", (event) => console.log(event.data));
+    myDataChannel.addEventListener("message", (event) => handleBubble(event.data));
   });
   myPeerConnection.setRemoteDescription(offer);
   const answer = await myPeerConnection.createAnswer();

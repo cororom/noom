@@ -322,6 +322,34 @@ main {
   justify-content: space-between;
   align-items: center;
 }
+.chat__bubbles {
+  width: 100%;
+  height: 220px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+}
+.chat__bubbles::-webkit-scrollbar {
+  display: none;
+}
+.chat__bubble {
+  margin-bottom: 15px;
+  display: flex;
+}
+.chat__bubble.mine {
+  justify-content: flex-end;
+}
+.chat__bubble.mine span {
+  background-color: #37a7ff;
+  border-top-right-radius: 0%;
+}
+.chat__bubble.other span {
+  background-color: #3d4353;
+  border-top-left-radius: 0%;
+}
+.chat__bubble span {
+  padding: 10px;
+  border-radius: 10px;
+}
 .chat__msg {
   width: 85%;
   height: 44px;
