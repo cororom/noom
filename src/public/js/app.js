@@ -110,11 +110,11 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 const chat = document.querySelector(".room__chat");
 const chatForm = chat.querySelector("form");
 
-function handleBubble(obj) {
+function handleBubble(obj, type = "receive") {
   const info = JSON.parse(obj);
   const bubbles = document.querySelector(".chat__bubbles");
   const div = document.createElement("div");
-  if (info.name === nickName) {
+  if (type === "send") {
     div.className = "chat__bubble mine";
   } else {
     div.className = "chat__bubble other";
@@ -131,7 +131,7 @@ async function handleChatSubmit(event) {
   const obj = JSON.stringify({ name: nickName, msg: input.value });
   await myDataChannel.send(obj);
   input.value = "";
-  handleBubble(obj);
+  handleBubble(obj, "send");
 }
 
 chatForm.addEventListener("submit", handleChatSubmit);
