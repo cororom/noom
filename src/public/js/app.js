@@ -111,18 +111,26 @@ const chat = document.querySelector(".room__chat");
 const chatForm = chat.querySelector("form");
 
 function handleBubble(obj, type = "receive") {
-  const info = JSON.parse(obj);
+  const data = JSON.parse(obj);
   const bubbles = document.querySelector(".chat__bubbles");
-  const div = document.createElement("div");
+  const bubble = document.createElement("div");
   if (type === "send") {
-    div.className = "chat__bubble mine";
+    bubble.className = "chat__bubble mine";
   } else {
-    div.className = "chat__bubble other";
+    bubble.className = "chat__bubble other";
   }
-  const span = document.createElement("span");
-  span.innerText = info.msg;
-  div.appendChild(span);
-  bubbles.appendChild(div);
+  const info = document.createElement("div");
+  info.className = "chat__info";
+  const name = document.createElement("span");
+  name.className = "chat__name";
+  name.innerText = data.name;
+  const text = document.createElement("span");
+  text.className = "chat__text";
+  text.innerText = data.msg;
+  info.appendChild(name);
+  info.appendChild(text);
+  bubble.appendChild(info);
+  bubbles.appendChild(bubble);
 }
 
 async function handleChatSubmit(event) {

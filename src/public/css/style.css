@@ -334,19 +334,31 @@ main {
 .chat__bubble {
   margin-bottom: 15px;
   display: flex;
+  word-break: break-word;
+}
+.chat__bubble .chat__info {
+  display: flex;
+  flex-direction: column;
+}
+.chat__bubble .chat__name {
+  line-height: 1.2;
+  color: white;
 }
 .chat__bubble.mine {
   justify-content: flex-end;
 }
-.chat__bubble.mine span {
+.chat__bubble.mine .chat__info {
+  align-items: flex-end;
+}
+.chat__bubble.mine .chat__text {
   background-color: #37a7ff;
   border-top-right-radius: 0%;
 }
-.chat__bubble.other span {
+.chat__bubble.other .chat__text {
   background-color: #3d4353;
   border-top-left-radius: 0%;
 }
-.chat__bubble span {
+.chat__bubble .chat__text {
   padding: 10px;
   border-radius: 10px;
 }
