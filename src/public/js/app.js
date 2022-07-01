@@ -97,8 +97,10 @@ async function handleWelcomeSubmit(event) {
   const input = welcomeForm.querySelectorAll("input");
   roomName = input[0].value;
   nickName = input[1].value;
-  await initRoom();
-  socket.emit("join_room", roomName, nickName);
+  if (roomName.trim() && nickName.trim()) {
+    await initRoom();
+    socket.emit("join_room", roomName, nickName);
+  }
   input[0].value = "";
   input[1].value = "";
 }
