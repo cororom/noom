@@ -246,6 +246,7 @@ main {
 }
 .room__stream header h2 {
   color: white;
+  font-size: 20px;
 }
 .stream__control-btn {
   width: 100%;

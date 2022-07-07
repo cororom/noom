@@ -110,7 +110,7 @@ function initRoom() {
   room.classList.add("hide");
   chat.innerHTML = "";
   const input = chatForm.querySelectorAll("input");
-  input.forEach((element) => element.value = "");
+  input.forEach((element) => (element.value = ""));
   roomName = null;
   nickName = null;
 }
@@ -132,7 +132,10 @@ async function handleWelcomeSubmit(event) {
   nickName = input[1].value;
   if (roomName.trim() && nickName.trim()) {
     await enterRoom();
-    socket.emit("join_room", roomName, nickName);
+    socket.emit("join_room", roomName, nickName, (name) => {
+      const roomTitle = document.querySelector(".room__name");
+      roomTitle.innerText = name;
+    });
   }
   input[0].value = "";
   input[1].value = "";
@@ -174,7 +177,7 @@ async function handleChatSubmit(event) {
   const obj = JSON.stringify({ name: nickName, msg: input.value });
   peerConnections.forEach(async (connection) => {
     await connection.dataChannel.send(obj);
-  })
+  });
   input.value = "";
   handleBubble(obj, "send");
 }
@@ -229,12 +232,13 @@ socket.on("reject", (response) => {
     myStream.getTracks().forEach((track) => track.stop());
     myStream = null;
   }
+  alert("The chat room is full.");
+  initRoom();
   if (!peerConnections.has(response.id)) {
     return;
   }
   peerConnections.get(response.id).close();
   peerConnections.delete(response.id);
-  initRoom();
 });
 
 // RTC Code
@@ -295,7 +299,7 @@ function handleTrack(data, peerId, nickname) {
   peerFace.srcObject = data.streams[0];
   peerFace.autoplay = true;
   peerFace.playsinline = true;
-  const peerName  = document.createElement("span");
+  const peerName = document.createElement("span");
   peerName.className = "other__name";
   peerName.innerText = nickname;
   peerBox.appendChild(peerFace);

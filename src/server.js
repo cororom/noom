@@ -23,21 +23,39 @@ function getRandomId() {
   return crypto.randomBytes(16).toString("hex");
 }
 
+function getRoomCount(room) {
+  let count = 0;
+  users.forEach((user) => {
+    if (user.room === room) {
+      count++;
+    }
+  });
+  return count;
+}
+
 wsServer.on("connection", (socket) => {
+  socket.on("disconnect", () => {
+    const user = users.get(socket.data.userId);
+    if (user) {
+      socket.leave(user.room);
+      users.delete(socket.data.userId);
+      socket.to(user.room).emit("leave", user);
+    }
+  });
   socket.on("session", (id, done) => {
     let user;
     if (users.has(id)) {
       user = users.get(id);
     } else {
-      user = {id: getRandomId()};
+      user = { id: getRandomId() };
       users.set(user.id, user);
     }
     socket.data.userId = user.id;
-    done({id: user.id});
-  })
-  socket.on("join_room", async (roomName, nickName) => {
+    done({ id: user.id });
+  });
+  socket.on("join_room", async (roomName, nickName, done) => {
     let user = users.get(socket.data.userId);
-    if (users.size === maximum) {
+    if (getRoomCount(roomName) === maximum) {
       socket.emit("reject", user);
       return;
     }
@@ -45,21 +63,22 @@ wsServer.on("connection", (socket) => {
     user.room = roomName;
     users.set(socket.data.userId, user);
     socket.join(roomName);
+    done(roomName);
     socket.to(roomName).emit("welcome", user);
   });
   socket.on("offer", async (offer, userId) => {
     const user = users.get(socket.data.userId);
-    const target = (await wsServer.fetchSockets()).find((_socket) => (_socket.data.userId === userId));
+    const target = (await wsServer.fetchSockets()).find((_socket) => _socket.data.userId === userId);
     socket.to(target.id).emit("offer", offer, user);
   });
   socket.on("answer", async (answer, userId) => {
     const user = users.get(socket.data.userId);
-    const target = (await wsServer.fetchSockets()).find((_socket) => (_socket.data.userId === userId));
+    const target = (await wsServer.fetchSockets()).find((_socket) => _socket.data.userId === userId);
     socket.to(target.id).emit("answer", answer, user);
   });
   socket.on("ice", async (ice, userId) => {
     const user = users.get(socket.data.userId);
-    const target = (await wsServer.fetchSockets()).find((_socket) => (_socket.data.userId === userId));
+    const target = (await wsServer.fetchSockets()).find((_socket) => _socket.data.userId === userId);
     socket.to(target.id).emit("ice", ice, user);
   });
   socket.on("leave-room", (roomName, done) => {
@@ -70,7 +89,7 @@ wsServer.on("connection", (socket) => {
       socket.to(roomName).emit("leave", user);
     }
     done();
-  })
+  });
 });
 
 httpServer.listen(3000, handleListen);
