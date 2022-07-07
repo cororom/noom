@@ -253,7 +253,21 @@ main {
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
-  margin-bottom: 50%;
+  margin-bottom: 35%;
+}
+.stream__control-btn div:not(:last-child) {
+  margin-bottom: 10px;
+}
+.stream__control-btn button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  border-radius: 12px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 .room__stream button {
   width: 44px;
@@ -262,6 +276,9 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "Material Icons Round";
+  font-weight: normal;
+  font-style: normal;
 }
 .stream--mute {
   color: #67667b;
@@ -429,6 +446,6 @@ select::-ms-expand {
   pointer-events: none;
 }
 /* Transition */
-.select:hover::after {
+/*.select:hover::after {
   color: #37a7ff;
-}
+}*/

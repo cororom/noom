@@ -1,5 +1,6 @@
 import http from "http";
 import SocketIo from "socket.io";
+import crypto from "crypto";
 import express from "express";
 
 const app = express();
@@ -15,21 +16,61 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 const httpServer = http.createServer(app);
 const wsServer = SocketIo(httpServer);
 
+const maximum = 4;
+const users = new Map();
+
+function getRandomId() {
+  return crypto.randomBytes(16).toString("hex");
+}
+
 wsServer.on("connection", (socket) => {
-  socket.on("join_room", (roomName, nickName) => {
+  socket.on("session", (id, done) => {
+    let user;
+    if (users.has(id)) {
+      user = users.get(id);
+    } else {
+      user = {id: getRandomId()};
+      users.set(user.id, user);
+    }
+    socket.data.userId = user.id;
+    done({id: user.id});
+  })
+  socket.on("join_room", async (roomName, nickName) => {
+    let user = users.get(socket.data.userId);
+    if (users.size === maximum) {
+      socket.emit("reject", user);
+      return;
+    }
+    user.nickname = nickName;
+    user.room = roomName;
+    users.set(socket.data.userId, user);
     socket.join(roomName);
-    socket["nickname"] = nickName;
-    socket.to(roomName).emit("welcome");
+    socket.to(roomName).emit("welcome", user);
   });
-  socket.on("offer", (offer, roomName) => {
-    socket.to(roomName).emit("offer", offer);
+  socket.on("offer", async (offer, userId) => {
+    const user = users.get(socket.data.userId);
+    const target = (await wsServer.fetchSockets()).find((_socket) => (_socket.data.userId === userId));
+    socket.to(target.id).emit("offer", offer, user);
   });
-  socket.on("answer", (answer, roomName) => {
-    socket.to(roomName).emit("answer", answer);
+  socket.on("answer", async (answer, userId) => {
+    const user = users.get(socket.data.userId);
+    const target = (await wsServer.fetchSockets()).find((_socket) => (_socket.data.userId === userId));
+    socket.to(target.id).emit("answer", answer, user);
   });
-  socket.on("ice", (ice, roomName) => {
-    socket.to(roomName).emit("ice", ice);
+  socket.on("ice", async (ice, userId) => {
+    const user = users.get(socket.data.userId);
+    const target = (await wsServer.fetchSockets()).find((_socket) => (_socket.data.userId === userId));
+    socket.to(target.id).emit("ice", ice, user);
   });
+  socket.on("leave-room", (roomName, done) => {
+    const user = users.get(socket.data.userId);
+    if (user) {
+      socket.leave(roomName);
+      users.delete(socket.data.userId);
+      socket.to(roomName).emit("leave", user);
+    }
+    done();
+  })
 });
 
 httpServer.listen(3000, handleListen);
