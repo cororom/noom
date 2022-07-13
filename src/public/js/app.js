@@ -148,6 +148,16 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 const chat = document.querySelector(".room__chat");
 const chatForm = chat.querySelector("form");
 
+function handleNotice(msg) {
+  const container = document.createElement("div");
+  container.className = "chat__notice";
+  const line = document.createElement("p");
+  line.innerText = msg;
+  container.appendChild(line);
+  const bubbles = document.querySelector(".chat__bubbles");
+  bubbles.appendChild(container);
+}
+
 function handleBubble(obj, type = "receive") {
   const data = JSON.parse(obj);
   const bubbles = document.querySelector(".chat__bubbles");
@@ -189,6 +199,7 @@ chatForm.addEventListener("submit", handleChatSubmit);
 socket.on("welcome", async (response) => {
   const myPeerConnection = makeConnection(response.id, response.nickname);
   makeDataChannel(myPeerConnection, false);
+  handleNotice(`${response.nickname} arrived!`);
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
   console.log("sent the offer");
@@ -225,6 +236,7 @@ socket.on("leave", (response) => {
   }
   peerConnections.get(response.id).close();
   peerConnections.delete(response.id);
+  handleNotice(`${response.nickname} left 😪`);
 });
 
 socket.on("reject", (response) => {

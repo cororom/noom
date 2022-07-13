@@ -228,6 +228,7 @@ main {
   left: 0;
   border-top-left-radius: 50px;
   border-top-right-radius: 50px;
+  object-fit: cover;
 }
 .room__stream .stream__overlay {
   position: absolute;
@@ -308,6 +309,7 @@ main {
   height: 120px;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 14px;
+  object-fit: cover;
 }
 .other__name {
   border: none;
@@ -395,6 +397,35 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.chat__notice {
+  display: block;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 15px;
+}
+.chat__notice p {
+  position: relative;
+  display: inline-block;
+  color: #9fa3a9;
+}
+.chat__notice p::before,
+.chat__notice p::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 9999px;
+  height: 1px;
+  background: #9fa3a9;
+}
+.chat__notice p::before {
+  right: 100%;
+  margin-right: 15px;
+}
+.chat__notice p::after {
+  left: 100%;
+  margin-left: 15px;
 }
 .hide {
   display: none;
