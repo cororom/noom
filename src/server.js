@@ -23,6 +23,21 @@ function getRandomId() {
   return crypto.randomBytes(16).toString("hex");
 }
 
+function publicRooms() {
+  const {
+    sockets: {
+      adapter: { sids, rooms },
+    },
+  } = wsServer;
+  const publicRooms = [];
+  rooms.forEach((_, key) => {
+    if (sids.get(key) === undefined) {
+      publicRooms.push(key);
+    }
+  });
+  return publicRooms;
+}
+
 function getRoomCount(room) {
   let count = 0;
   users.forEach((user) => {
@@ -34,12 +49,15 @@ function getRoomCount(room) {
 }
 
 wsServer.on("connection", (socket) => {
+  wsServer.sockets.emit("change_room", publicRooms());
   socket.on("disconnect", () => {
     const user = users.get(socket.data.userId);
     if (user) {
       socket.leave(user.room);
       users.delete(socket.data.userId);
       socket.to(user.room).emit("leave", user);
+      wsServer.sockets.emit("change_room", publicRooms());
+      wsServer.sockets.emit("count_user", getRoomCount(user.room));
     }
   });
   socket.on("session", (id, done) => {
@@ -65,6 +83,8 @@ wsServer.on("connection", (socket) => {
     socket.join(roomName);
     done(roomName);
     socket.to(roomName).emit("welcome", user);
+    wsServer.sockets.emit("change_room", publicRooms());
+    wsServer.sockets.emit("count_user", getRoomCount(user.room));
   });
   socket.on("offer", async (offer, userId) => {
     const user = users.get(socket.data.userId);
@@ -81,14 +101,26 @@ wsServer.on("connection", (socket) => {
     const target = (await wsServer.fetchSockets()).find((_socket) => _socket.data.userId === userId);
     socket.to(target.id).emit("ice", ice, user);
   });
-  socket.on("leave-room", (roomName, done) => {
+  socket.on("leave_room", (roomName, done) => {
     const user = users.get(socket.data.userId);
     if (user) {
       socket.leave(roomName);
       users.delete(socket.data.userId);
       socket.to(roomName).emit("leave", user);
+      wsServer.sockets.emit("change_room", publicRooms());
+      wsServer.sockets.emit("count_user", getRoomCount(user.room));
     }
     done();
+  });
+  socket.on("change_nickname", async (nickName, done) => {
+    let user = users.get(socket.data.userId);
+    if (user) {
+      user.oldNickname = user.nickname;
+      user.nickname = nickName;
+      users.set(socket.data.userId, user);
+      await socket.to(user.room).emit("change_nickname", user, socket.data.userId);
+    }
+    done(user);
   });
 });
 

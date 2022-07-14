@@ -9,12 +9,20 @@ html(lang="en")
         link(rel="stylesheet" href="/public/css/style.css")
     body
         main
+            div.message.hide
+                div.message__border
+                span.message__icon
+                    span.material-icons-round info
+                div.message__text
+                    span.title Info
+                    span.subtitle
             section.welcome
                 div.welcome__img
-                    img(src="http://drive.google.com/uc?export=download&id=1PQIJmiZyVEETI9cRpFKib6CbrDZVzzhm" alt="main" srcset="")
+                    img(src="/public/image/chat.png" alt="main" srcset="")
                 header
                     h1 Hello Again!
                     h3 Welcome back you've been missed!
+                ul.welcome__rooms
                 form(method="post")
                     input(type="text" name="room" placeholder="Enter room" required)
                     input(type="text", name="nickname" placeholder="Enter nickname" required)
@@ -25,11 +33,15 @@ html(lang="en")
                         div.stream__overlay
                             header
                                 button.stream--mute.material-icons-round volume_off
-                                h2.room__name
+                                div.room__info
+                                    h2.room__name
+                                    span.room__count
                                 button.stream--off.material-icons-round call
                             div.stream__control-btn
                                 div.select
                                     select.stream--cameras
+                                div
+                                    button.modal--open.material-icons-round manage_accounts
                                 div
                                     button.stream--leave.material-icons-round logout
                             div.stream__peers
@@ -39,5 +51,12 @@ html(lang="en")
                         form.chat__form
                             input.chat__msg(type="text" name="msg")
                             button.chat--send.material-icons-round send
+            div.modal.hide
+                button.modal--close &times;
+                h1 Change nickname
+                form(method="post")
+                    input(type="text" name="nickname" required)
+                    button Change
+            div.overlay.hide
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")

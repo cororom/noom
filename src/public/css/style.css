@@ -166,7 +166,7 @@ main {
 }
 .welcome header {
   padding: 0px 30px;
-  margin: 50px auto 45px;
+  margin: 50px auto 19px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -213,6 +213,27 @@ main {
   margin-top: 64px;
   box-shadow: rgb(253, 107, 104) -4px 9px 25px -6px;
 }
+.welcome__rooms {
+  margin: 0 30px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+}
+.welcome__rooms::-webkit-scrollbar {
+  display: none;
+}
+.welcome__rooms li {
+  background-color: #abb0ef;
+  border-radius: 10px;
+  width: fit-content;
+  padding: 5px;
+  text-align: center;
+}
+.welcome__rooms li:not(:last-child) {
+  margin-right: 5px;
+}
 .room {
   width: 100%;
   height: 100%;
@@ -245,9 +266,17 @@ main {
   width: 100%;
   margin-bottom: 35px;
 }
-.room__stream header h2 {
+.room__stream .room__info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: white;
+}
+.room__stream .room__info h2 {
   font-size: 20px;
+}
+.room__stream .room__info span {
+  font-size: 16px;
 }
 .stream__control-btn {
   width: 100%;
@@ -255,7 +284,7 @@ main {
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
-  margin-bottom: 35%;
+  margin-bottom: 21%;
 }
 .stream__control-btn div:not(:last-child) {
   margin-bottom: 10px;
@@ -269,7 +298,7 @@ main {
   font-size: 24px;
   border-radius: 12px;
   color: white;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.4);
 }
 .room__stream button {
   width: 44px;
@@ -307,7 +336,6 @@ main {
 .stream__other {
   width: 120px;
   height: 120px;
-  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 14px;
   object-fit: cover;
 }
@@ -428,7 +456,7 @@ main {
   margin-left: 15px;
 }
 .hide {
-  display: none;
+  display: none !important;
 }
 select {
   /* Reset Select */
@@ -473,7 +501,7 @@ select::-ms-expand {
   font-size: 24px;
   border-radius: 12px;
   color: white;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.4);
   transition: 0.25s all ease;
   pointer-events: none;
 }
@@ -481,3 +509,120 @@ select::-ms-expand {
 /*.select:hover::after {
   color: #37a7ff;
 }*/
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 500px;
+  background-color: white;
+  padding: 4rem;
+  border-radius: 5px;
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  text-align: center;
+}
+.modal h1 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  z-index: 5;
+  border-radius: 50px;
+}
+.modal--close {
+  position: absolute;
+  top: 0.8rem;
+  right: 1.3rem;
+  font-size: 2.5rem;
+  color: #333;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.modal form input,
+.modal form button {
+  display: block;
+  width: 100%;
+  margin: 1.3rem 0;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  padding: 1rem;
+  font-size: 1.1rem;
+}
+.modal form input {
+  box-shadow: inset 2px 2px 5px #babecc, inset -5px -5px 10px #ffffff73;
+}
+.modal form button {
+  background-color: rgb(2, 0, 145);
+  color: #fff;
+}
+
+@keyframes goAway {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+}
+.message {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  margin: 0 auto;
+  max-width: 300px;
+  padding: 10px;
+  border-radius: 7px;
+  box-shadow: rgb(0 0 0 / 45%) 0px 25px 20px -20px;
+  display: flex;
+  background-color: white;
+}
+.message:not(.hide) {
+  animation: goAway 0.5s ease-in-out forwards;
+  animation-delay: 5s;
+}
+.message .message__icon {
+  display: block;
+}
+.message .message__icon span {
+  font-size: 32px;
+}
+.message.info {
+  border-left: 7px solid #ffc12b;
+}
+.message.info .message__icon {
+  color: #ffc12b;
+}
+.message .message__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 10px;
+  line-height: 16px;
+}
+.message .message__text .title {
+  color: #495057;
+  font-weight: 700;
+}
+.message .message__text .subtitle {
+  color: #adb5bd;
+}
+
+.material-icons-round {
+  cursor: pointer;
+}

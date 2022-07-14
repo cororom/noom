@@ -90,7 +90,7 @@ function handleStreamLeave() {
     });
     connection.close();
   });
-  socket.emit("leave-room", roomName, () => {
+  socket.emit("leave_room", roomName, () => {
     initRoom();
   });
 }
@@ -244,13 +244,37 @@ socket.on("reject", (response) => {
     myStream.getTracks().forEach((track) => track.stop());
     myStream = null;
   }
-  alert("The chat room is full.");
+  handleDialog("The chat room is full.");
   initRoom();
   if (!peerConnections.has(response.id)) {
     return;
   }
   peerConnections.get(response.id).close();
   peerConnections.delete(response.id);
+});
+
+socket.on("change_room", (rooms) => {
+  const roomList = welcome.querySelector("ul");
+  roomList.innerHTML = "";
+  if (rooms.length === 0) {
+    return;
+  }
+  rooms.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    roomList.appendChild(li);
+  });
+});
+
+socket.on("change_nickname", (user) => {
+  if (user) {
+    handleNotice(`${user.oldNickname} -> ${user.nickname} changed`);
+  }
+});
+
+socket.on("count_user", (count) => {
+  const roomCount = document.querySelector(".room__count");
+  roomCount.innerText = `(${count})`;
 });
 
 // RTC Code
@@ -317,4 +341,54 @@ function handleTrack(data, peerId, nickname) {
   peerBox.appendChild(peerFace);
   peerBox.appendChild(peerName);
   peerSection.appendChild(peerBox);
+}
+
+// modal code
+const modal = document.querySelector(".modal");
+const modalOpenBtn = document.querySelector(".modal--open");
+const modalCloseBtn = document.querySelector(".modal--close");
+const overlay = document.querySelector(".overlay");
+
+function handleModalSubmit(event) {
+  event.preventDefault();
+  const modalInput = modal.querySelector("form input");
+  if (modalInput.value.trim() === "") {
+    return;
+  }
+  socket.emit("change_nickname", modalInput.value, (response) => {
+    nickName = response.nickname;
+  });
+  modalInput.value = "";
+  handleModalClick();
+}
+
+function handleModalClick() {
+  modal.classList.toggle("hide");
+  overlay.classList.toggle("hide");
+  const modalForm = modal.querySelector("form");
+  const modalBtn = modalForm.querySelector("button");
+  if (modal.classList.contains("hide")) {
+    modalBtn.removeEventListener("click", handleModalSubmit);
+  } else {
+    modalBtn.addEventListener("click", handleModalSubmit);
+  }
+}
+
+modalOpenBtn.addEventListener("click", handleModalClick);
+modalCloseBtn.addEventListener("click", handleModalClick);
+overlay.addEventListener("click", handleModalClick);
+
+// dialog code
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function handleDialog(msg) {
+  const dialog = document.querySelector(".message");
+  const text = dialog.querySelector(".subtitle");
+  text.innerText = msg;
+  dialog.classList.remove("hide");
+  await sleep(6000);
+  dialog.classList.add("hide");
 }
