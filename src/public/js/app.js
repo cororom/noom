@@ -108,7 +108,8 @@ const welcomeForm = welcome.querySelector("form");
 function initRoom() {
   welcome.classList.remove("hide");
   room.classList.add("hide");
-  chat.innerHTML = "";
+  const bubbles = document.querySelector(".chat__bubbles");
+  bubbles.innerHTML = "";
   const input = chatForm.querySelectorAll("input");
   input.forEach((element) => (element.value = ""));
   roomName = null;
